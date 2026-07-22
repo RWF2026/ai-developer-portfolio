@@ -6,6 +6,7 @@ const SESSION_KEY = "portfolio-visit-notified";
 
 /**
  * Notifies site owner by email once per browser session when the portfolio is opened.
+ * Supports optional ?name= / ?from= query params for shared links with a visitor name.
  */
 export function VisitNotifier() {
   useEffect(() => {
@@ -16,17 +17,24 @@ export function VisitNotifier() {
       // private mode / blocked storage — still attempt notify
     }
 
+    const params = new URLSearchParams(window.location.search);
+    const visitorName =
+      params.get("name") ||
+      params.get("from") ||
+      params.get("visitor") ||
+      "";
+
     const payload = {
       path: window.location.pathname + window.location.search,
       referrer: document.referrer || "",
       language: navigator.language || "",
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "",
       screen: `${window.screen.width}x${window.screen.height}`,
+      visitorName,
     };
 
-    // Fire-and-forget; don't block UI
     const controller = new AbortController();
-    const t = window.setTimeout(() => controller.abort(), 8000);
+    const t = window.setTimeout(() => controller.abort(), 10000);
 
     void fetch("/api/notify-visit", {
       method: "POST",
