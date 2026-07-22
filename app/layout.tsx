@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Outfit, Syne } from "next/font/google";
+import { VisitNotifier } from "@/components/VisitNotifier";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -43,6 +44,7 @@ export default function RootLayout({
       className={`${outfit.variable} ${syne.variable} ${jetbrains.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-ink-950 font-sans text-mist-100">
+        <VisitNotifier />
         {children}
       </body>
     </html>
